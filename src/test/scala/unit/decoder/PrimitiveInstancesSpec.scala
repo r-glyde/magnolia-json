@@ -28,6 +28,24 @@ class PrimitiveInstancesSpec extends UnitSpecBase {
     "return error if JSON cannot be decoded correctly" in {
       JsonObject(Map("string" -> JsonInteger(101))).to[Simple] shouldBe a[Left[_, _]]
     }
+
+    "decoded nested JSON to a corresponding case class" in {
+      case class Nested(string: String, inner: Inner)
+      case class Inner(boolean: Boolean, long: Long)
+
+      forAll { (string: String, boolean: Boolean, long: Long) =>
+        JsonObject(
+          Map(
+            "string" -> JsonString(string),
+            "inner" -> JsonObject(
+              Map(
+                "boolean" -> JsonBoolean(boolean),
+                "long"    -> JsonInteger(long)
+              ))
+          )
+        ).to[Nested].value shouldBe Nested(string, Inner(boolean, long))
+      }
+    }
   }
 
 }

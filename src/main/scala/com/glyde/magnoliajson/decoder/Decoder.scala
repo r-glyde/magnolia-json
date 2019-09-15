@@ -29,9 +29,9 @@ object Decoder {
           .fold[Result[T]](decoderError(json, cc.typeName.short).asLeft) {
             case (_, v) => param.typeclass.decode(v).asInstanceOf[Result[T]]
           }
-      }.flatMap { rs =>
-        Try(cc.rawConstruct(rs)).fold(e => Error(e.getMessage).asLeft, _.asRight)
-      }
+      }.flatMap(rs =>
+        Try(cc.rawConstruct(rs))
+          .fold(e => Error(e.getMessage).asLeft, _.asRight))
     case json => decoderError(json, cc.typeName.short).asLeft
   }
 

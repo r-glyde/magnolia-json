@@ -22,19 +22,23 @@ object Decoder {
 
   implicit def gen[T]: Typeclass[T] = macro Magnolia.gen[T]
 
-  def combine[T](cc: CaseClass[Typeclass, T]): Typeclass[T] = {
-    case json @ JsonObject(vs) =>
-      cc.parameters.toList.traverse { param =>
-        vs.find { case (k, _) => k == param.label }
-          .fold[Result[T]](decoderError(json, cc.typeName.short).asLeft) {
-            case (_, v) => param.typeclass.decode(v).asInstanceOf[Result[T]]
-          }
-      }.flatMap(rs =>
-        Try(cc.rawConstruct(rs))
-          .fold(e => Error(e.getMessage).asLeft, _.asRight))
-    case json => decoderError(json, cc.typeName.short).asLeft
+  def combine[T](cc: CaseClass[Typeclass, T]): Typeclass[T] = new Typeclass[T] {
+    override def decode(json: Json): Result[T] = json match {
+      case JsonObject(vs) =>
+        cc.parameters.toList.traverse { param =>
+          vs.find { case (k, _) => k == param.label }
+            .fold[Result[T]](decoderError(json, cc.typeName.short).asLeft) {
+              case (_, v) => param.typeclass.decode(v).asInstanceOf[Result[T]]
+            }
+        }.flatMap(rs =>
+          Try(cc.rawConstruct(rs))
+            .fold(e => Error(e.getMessage).asLeft, _.asRight))
+      case _ => decoderError(json, cc.typeName.short).asLeft
+    }
   }
 
-  def dispatch[T](st: SealedTrait[Typeclass, T]): Typeclass[T] = ???
+  def dispatch[T](st: SealedTrait[Typeclass, T]): Typeclass[T] = new Typeclass[T] {
+    override def decode(json: Json): Result[T] = ???
+  }
 
 }

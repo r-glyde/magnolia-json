@@ -21,20 +21,22 @@ object Encoder {
 
   implicit def gen[T]: Typeclass[T] = macro Magnolia.gen[T]
 
-  def combine[T](cc: CaseClass[Typeclass, T]): Typeclass[T] = (value: T) => {
-    cc.parameters.toList.traverse { param =>
-      param.typeclass.encode(param.dereference(value)).map(j => param.label -> j)
-    }.map(kvs => JsonObject(kvs.toMap))
+  def combine[T](cc: CaseClass[Typeclass, T]): Typeclass[T] = new Typeclass[T] {
+    override def encode(value: T): Result[Json] =
+      cc.parameters.toList.traverse { param =>
+        param.typeclass.encode(param.dereference(value)).map(j => param.label -> j)
+      }.map(kvs => JsonObject(kvs.toMap))
   }
 
   /**
     * Doesn't work well for especially for case classes extending a sealed trait
     */
-  def dispatch[T](st: SealedTrait[Typeclass, T]): Typeclass[T] = (value: T) => {
-    st.dispatch(value) { subtype =>
-//      subtype.typeclass.encode(subtype.cast(value))
-      safe(JsonString(subtype.cast(value).toString))
-    }
+  def dispatch[T](st: SealedTrait[Typeclass, T]): Typeclass[T] = new Typeclass[T] {
+    override def encode(value: T): Result[Json] =
+      st.dispatch(value) { subtype =>
+        //      subtype.typeclass.encode(subtype.cast(value))
+        safe(JsonString(subtype.cast(value).toString))
+      }
   }
 
 }

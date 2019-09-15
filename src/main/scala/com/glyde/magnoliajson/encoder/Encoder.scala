@@ -4,7 +4,7 @@ import cats.instances.either._
 import cats.instances.list._
 import cats.syntax.traverse._
 import com.glyde.magnoliajson.Json.{JsonObject, JsonString}
-import com.glyde.magnoliajson.{Json, Result, safe}
+import com.glyde.magnoliajson.{safe, Json, Result}
 import magnolia.{CaseClass, Magnolia, SealedTrait}
 
 trait Encoder[T] {

@@ -30,8 +30,6 @@ class UnionInstancesSpec extends UnitSpecBase {
 
     "encode a case class with a shapeless coproduct" in {
 
-      import common.Arbitraries._
-
       case class Whatever(string: String, boolean: Boolean)
       type StringOrBooleanOrWhatever = String :+: Boolean :+: Whatever :+: CNil
 

@@ -1,7 +1,7 @@
 package unit.encoder
 
 import base.UnitSpecBase
-import com.danielasfregola.randomdatagenerator.magnolia.RandomDataGenerator._
+import com.danielasfregola.randomdatagenerator.RandomDataGenerator._
 import com.glyde.magnoliajson.Json._
 import com.glyde.magnoliajson.Syntax._
 

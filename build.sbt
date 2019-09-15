@@ -10,17 +10,18 @@ lazy val catsDeps = Seq(
 ).map("org.typelevel" %% _ % "1.6.1")
 
 projectDependencies ++= catsDeps ++ Seq(
-  "com.propensive"      %% "magnolia"                       % "0.11.0",
-  "com.chuusai"         %% "shapeless"                      % "2.3.3",
-  "org.scalatest"       %% "scalatest"                      % "3.0.8" % Test,
-  "org.scalacheck"      %% "scalacheck"                     % "1.14.0" % Test,
-  "com.danielasfregola" %% "random-data-generator-magnolia" % "2.6" % Test,
-  "com.ironcorelabs"    %% "cats-scalatest"                 % "2.4.1" % Test
+  "com.propensive"      %% "magnolia"              % "0.11.0",
+  "com.chuusai"         %% "shapeless"             % "2.3.3",
+  "org.scalatest"       %% "scalatest"             % "3.0.8" % Test,
+  "org.scalacheck"      %% "scalacheck"            % "1.14.0" % Test,
+  "com.danielasfregola" %% "random-data-generator" % "2.7" % Test,
+  "com.ironcorelabs"    %% "cats-scalatest"        % "2.4.1" % Test
 )
 
 scalacOptions in Compile ++= Seq(
   "-deprecation",
-  "-encoding", "UTF-8",
+  "-encoding",
+  "UTF-8",
   "-unchecked",
   "-language:implicitConversions",
   "-language:postfixOps",

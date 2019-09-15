@@ -27,6 +27,9 @@ object Encoder {
     }.map(kvs => JsonObject(kvs.toMap))
   }
 
+  /**
+    * Doesn't work well for especially for case classes extending a sealed trait
+    */
   def dispatch[T](st: SealedTrait[Typeclass, T]): Typeclass[T] = (value: T) => {
     st.dispatch(value) { subtype =>
 //      subtype.typeclass.encode(subtype.cast(value))
